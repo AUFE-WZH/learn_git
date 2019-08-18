@@ -28,3 +28,16 @@
 
 4.重命名文件名：
     git mv readme readme.md  (将readme重命名为readme.md)
+
+5.通过git log查看版本演变历史：
+    (1) 缺省参数:git log (打印当前分支提交记录的详细信息)
+    (2) 看分支: git log temp (查看temp分支提交记录)
+    (3) 一行显示:git log --oneline (当前分支每个提交记录都是一行显示)
+    (4) 打印4次:git log -n4 --oneline (一行显示四次提交记录)
+    (5) 加all: git log --all (打印所有分支提交记录的详细信息)
+    (6) 图形化: git log --all --graph (图形化显示所有记录)
+    (7) 一行且所有: git log --oneline --all (所有记录显示且每个记录一行)
+    (8) 综合使用: git log --oneline --all -n4 --graph
+
+6.图形化工具gitk查看历史记录：
+    
