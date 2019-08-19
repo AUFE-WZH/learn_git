@@ -23,13 +23,38 @@
             cd your_project
 
 3.工作区与暂存区概念：
-    工作目录-------------->暂存区-------------->历史版本
+    工作区-------------->暂存区-------------->历史版本
            (git add files)     (git commit -m'xxx')
-
-4.重命名文件名：
-    git mv readme readme.md  (将readme重命名为readme.md)
-
-5.通过git log查看版本演变历史：
+    (1) 添加文件进入暂存区：
+        git add files       (files为文件名，当使用git add . 表示添加当前目录下所有更新文件进入暂存区)
+    (2) 提交版本：
+        git commit -m'xxxx'     (xxxx为提交的记录信息)
+        使用:git commit -am'xxx'    (可以直接一次性添加并提交)
+    (3) 查看当前工作区和暂存区状态：
+        git status
+    (4) 取消暂存区已经缓存的文件：
+        git reset HEAD
+    (5) 从github上克隆git仓库到本地：
+        git clone url   (url为需要克隆的git仓库的url地址)
+    (6) 删除已经修改过且放入暂存区的文件：
+        git rm -f filename  (filename为要删除工作区和暂存区的文件名)
+    (7) 只从暂存区中删除文件：
+        git rm --cached filename    (filename为要删除的暂存区的文件名)
+    (8) 重命名文件名：
+        git mv readme readme.md  (将readme重命名为readme.md)
+    (9) 查看git status的详细结果：
+        
+    (10) 查看哈希值指向的文件：
+        (10.1) 查看某个哈希值指向的文件内容：git cat-file -p 912fa6... (912fa6...为文件的哈希值)
+        (10.2) 查看某个哈希值指向的文件类型：git cat-file -t 912fa6...
+    (11) 查看所有分支信息：
+        git branch -av
+    (12) 切换分支：
+        git checkout branchname (branchname为分支名)
+    (13) 新建分支：
+        git checkout -b branchname 415c5c... (branchname为新建分支名，415c5c...为从版本中的某个已有版本创建分支)
+    
+4.通过git log查看版本演变历史：
     (1) 缺省参数:git log (打印当前分支提交记录的详细信息)
     (2) 看分支: git log temp (查看temp分支提交记录)
     (3) 一行显示:git log --oneline (当前分支每个提交记录都是一行显示)
@@ -39,5 +64,46 @@
     (7) 一行且所有: git log --oneline --all (所有记录显示且每个记录一行)
     (8) 综合使用: git log --oneline --all -n4 --graph
 
-6.图形化工具gitk查看历史记录：
-    
+5.图形化工具gitk查看历史记录：
+    注：当gitk出现中文乱码时，在git bash 中输入 git config --global gui.encoding utf-8 再次打开gitk即可
+    在gitk图形化界面：
+        上方：分支树、提交者、提交时间
+        下方：
+            左侧：某一节点更新内容
+            右侧：Patch为某一节点更新的文件，Tree为目录树
+    当点击上方菜单中View的新建view复选All refs点击OK，可以将所有分支节点的信息全部显示出来，不仅仅是一个分支版本。
+
+6.git中commit、tree、blob三者之间关系：
+    一次提交形成的目录关系：
+    commit: 415c5c...
+        tree: 912fa6...
+            tree：96b67e... images
+                blob：ef3f13... style.css
+            blob：6ad4c6... index.html
+            blob：7c2bab... readme
+            tree：aee370... styles
+                blob：daf480 git-logo.png
+        parent：9c6861...
+        author：wzh
+        committer：wzh 
+    总结：一次commit包含这次所有的文件夹以及一些作者等信息，但都以地址保存这样不改变内容的相同的文件两次提交都指向一个地址节省空间。tree为目录树保存blob,blob为文件保存内容。
+
+7.分离头指针：
+    解释：分离头指针是由于我们没有基于任何一个branch做修改，当最后没有新建一个branch时git会将其清理掉。
+    出现分离头指针的原因：当我们想要在某个节点上修改文件时只是做一些测试看看会怎么样不想更新某个分支的节点，当觉得可行便可建立新分支保留，不可则可以直接切换分支git将其所建的commit以及所更新的文件都丢弃，并且不显示任何操作记录。
+    语法：git checkout 415c5c... (415c5c...为某个节点哈希值)
+    想要保留的语法：git branch branchname 3d4731d... (branchname为新建的分支名，3d4731d...为checkout出去的节点经过变更后新产生的节点哈希值)
+
+8.HEAD与branch关系：
+    注：当切换到某个branch时HEAD也随即指向当前的branch，当为分离头指针时HEAD还可以指向一个commit节点。
+    HEAD与git diff语法：
+    (8.1) 查看还没有git add到暂存区的改动：git diff
+    (8.2) 查看已经git add到暂存区的改动：git diff --cached
+    (8.3) 查看已经在暂存区和未在暂存区的所有改动：git diff HEAD
+    (8.4) 查看摘要信息：git diff --stat  (执行结果例如：1 file changed, 30 insertions(+), 8 deletions(-))
+    (8.5) 查看上一次提交改动：git diff HEAD^
+    (8.6) 查看上两次提交改动：git diff HEAD^^
+    (8.7) 查看上n次提交改动：git diff HEAD~n 
+    (8.8) 比较某两次提交的不同(哈希值形式)：git diff 3d47... 415c... (3d47...和415c...是两次提交)
+    (8.9) 比较某两次提交的不同(HEAD形式和^形式)：git diff HEAD HEAD^^ (HEAD^^为上上次commit,HEAD为当前commit)
+
